@@ -10,6 +10,7 @@ from keras.datasets import mnist
 
 (train_x, train_y), (test_x, test_y) = mnist.load_data()
 
+
 # Data prep
 import numpy as np
 
@@ -20,6 +21,9 @@ def prep_mnist(data):
 train_x = prep_mnist(train_x)
 test_x = prep_mnist(test_x)
 
+# Look at one single image
+from keras.preprocessing import image
+image.array_to_img(train_x[1,:,:,:])
 
 # Model architecture
 from keras import models

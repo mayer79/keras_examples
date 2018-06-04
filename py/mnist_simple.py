@@ -11,6 +11,12 @@ import numpy as np
 from keras.datasets import mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
+
+# Look at one image
+from keras.preprocessing import image
+image.array_to_img(np.expand_dims(x_train[1,:,:], -1))
+
+
 # Prepare data
 def prep_x(x):
     return x.reshape((len(x), 28 * 28)).astype('float32') / 255
@@ -25,6 +31,7 @@ x_test = prep_x(x_test)
 
 y_train = prep_y(y_train)
 y_test = prep_y(y_test)
+
 
 # Network architecture
 from keras import models
