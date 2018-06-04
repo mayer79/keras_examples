@@ -78,9 +78,14 @@ def perf_plot(history, what = 'loss'):
 perf_plot(history, "loss")
 perf_plot(history, "acc")
 
+# Rerun on 5 epochs with all data
+mod.fit(train_x, train_y, batch_size = 64, epochs = 5)
+
 # Accuracy
 (test_loss, test_acc) = mod.evaluate(test_x, test_y)
 print("Test accuracy is", test_acc)
 
 preds = mod.predict(test_x[0:2,:])
+preds.sum(1) # Probabilities sum to 1 for each object
+preds.argmax(1) # Predicted digits: 7 and 2
 test_y[0:2]

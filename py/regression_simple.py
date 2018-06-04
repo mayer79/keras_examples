@@ -22,6 +22,9 @@ def scale(data, mean, sd):
 train_x = scale(train_x, m, s)
 test_x = scale(test_x, m, s)
 
+train_y = np.log(train_y)
+test_y = np.log(test_y)
+
 
 # Model architecture
 from keras import models

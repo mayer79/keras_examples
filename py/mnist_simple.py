@@ -33,21 +33,21 @@ y_train = prep_y(y_train)
 y_test = prep_y(y_test)
 
 
-# Network architecture
+# mymodel architecture
 from keras import models
 from keras import layers
 
-network = models.Sequential()
-network.add(layers.Dense(512, activation = 'relu', input_shape = (28 * 28, )))
-network.add(layers.Dense(10, activation = 'softmax'))
+mymodel = models.Sequential()
+mymodel.add(layers.Dense(512, activation = 'relu', input_shape = (28 * 28, )))
+mymodel.add(layers.Dense(10, activation = 'softmax'))
 
 # Compile
-network.compile(optimizer = 'rmsprop', 
+mymodel.compile(optimizer = 'rmsprop', 
                 loss = 'categorical_crossentropy', 
                 metrics = ['accuracy'])
 
 # Fit
-history = network.fit(x_train, y_train, batch_size=512, epochs=20, verbose=1, validation_split=0.05)
+history = mymodel.fit(x_train, y_train, batch_size=512, epochs=20, verbose=1, validation_split=0.05)
 
 # Assess overfit
 import matplotlib.pyplot as plt
@@ -66,9 +66,10 @@ def perf_plot(history, what = 'loss'):
     return None
 
 perf_plot(history, "loss")
-perf_plot(history, "mean_absolute_error")
+perf_plot(history, "acc")
 
 
 # Evaluate
-test_loss, test_metric = network.evaluate(x_test, y_test)
+test_loss, test_metric = mymodel.evaluate(x_test, y_test)
 print('Accuracy:', test_metric)
+
