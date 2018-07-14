@@ -10,3 +10,5 @@ The scripts are all located in the "py" folder:
 - regression_simple.py: Same for one numeric output aka regression
 - mnist_simple.py: Simple (non-convolutional) net to classify hand-written digits 
 - mnist_conv.py: Similar than above but now with convolutional layers
+- mnist_conv_augmentation.py: Similar than above but now with image data augmentation through "flow"
+- dog_detector.py: Similar than above but for a 120 class kaggle competition with dog breeds
