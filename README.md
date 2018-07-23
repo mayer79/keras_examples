@@ -12,3 +12,5 @@ The scripts are all located in the "py" folder:
 - mnist_conv.py: Similar than above but now with convolutional layers
 - mnist_conv_augmentation.py: Similar than above but now with image data augmentation through "flow"
 - dog_detector.py: Similar than above but for a 120 class kaggle competition with dog breeds
+- sentiment: Different RNNs for text input
+- times_series: Multidimensional timeseries through LSTM
