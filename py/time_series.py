@@ -6,7 +6,7 @@ Created on Mon Jul 23 20:03:40 2018
 """
 
 #############
-# Import data
+# Import data (fetch first from https://s3.amazonaws.com/keras-datasets/jena_climate_2009_2016.csv.zip)
 
 import os
 path = "C:/projects/foodDetector"
@@ -17,11 +17,8 @@ file = "jena_climate_2009_2016.csv"
 import pandas as pd
 import numpy as np
 
-raw = pd.read_csv(os.path.join(path, file))
-raw.drop('Date Time', inplace=True, axis = 1)
-raw.head()
-
-float_data = raw.values.astype("float32")
+float_data = pd.read_csv(os.path.join(path, file), dtype="float32", usecols=lambda x: x not in ['Date Time']).values
+float_data[0]
 
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
@@ -57,24 +54,26 @@ def generator(data, lookback=1440, delay=144, min_index=0, max_index=None, shuff
         
 # Initialize generators
 lookback =  1440
+batch_size = 128
+
 train_gen = generator(float_data,
                       lookback=1440,
                       min_index=0,
                       max_index=n_train,
-                      shuffle=True)
+                      shuffle=True,
+                      batch_size=128)
 
 valid_gen = generator(float_data,
                       lookback=1440,
                       min_index=n_train + 1,
                       max_index=n_train + 1 + n_valid,
-                      shuffle=True)
+                      shuffle=True,
+                      batch_size=128)
 
 test_gen = generator(float_data,
                      lookback=1440,
-                     min_index=n_train + 1 + 1000000)
-
-valid_steps = (n_valid - lookback) // 100
-test_steps = len(float_data) - n_train - n_valid
+                     min_index=n_train + n_valid + 1,
+                     batch_size=128)
 
 # Define model
 from keras.models import Sequential
@@ -87,11 +86,28 @@ model.add(Dense(1))
 
 model.summary()
 
-model.compile(optimizer=adam(), loss="mse", metrics=["mae"])
+model.compile(optimizer=adam(lr=0.001), loss="mse", metrics=["mae"])
 
 history = model.fit_generator(train_gen,
-                              steps_per_epoch=500,
+                              steps_per_epoch=n_train // batch_size,
                               epochs = 2,
                               validation_data=valid_gen,
-                              validation_steps=valid_steps)
+                              validation_steps=n_valid // batch_size)
 
+# Investigate development of accuracies
+import matplotlib.pyplot as plt
+
+def perf_plot(history, what = 'loss'):
+    x = history.history[what]
+    val_x = history.history['val_' + what]
+    epochs = np.asarray(history.epoch) + 1
+    
+    plt.plot(epochs, x, 'bo', label = "Training " + what)
+    plt.plot(epochs, val_x, 'b', label = "Validation " + what)
+    plt.title("Training and validation " + what)
+    plt.xlabel("Epochs")
+    plt.legend()
+    plt.show()
+    return None
+
+perf_plot(history, "mean_absolute_error")
